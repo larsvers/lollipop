@@ -1,0 +1,127 @@
+
+<<!DOCTYPE html>
+<html>
+<head>
+	<title>best animals ever</title>
+	<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+	<style type="text/css">
+	</style>
+
+</head>
+<body>
+
+<svg width="1500" height="1000"></svg>
+
+
+<script>
+	
+var vis = {};
+
+vis.stats = (function(){
+	
+	var my = {};
+
+	// vars accessible in all vis.stats()
+	var svg, width, height, margin, n;
+	var offset = 50; // offset for lines
+	var xScale;
+	
+	my.initContainer = function(){
+
+		margin = { top: 40, right: 30, bottom: 20, left: 70 }; // set the margins for the graph
+		
+		width = 1000, height = 800;
+		width = width - margin.left - margin.right;
+		height = height - margin.top - margin.bottom; // width and height decided by the space available and subtract the margins. width and height means 
+		
+		my.initGraph(); // initiate the graph
+		// my.initGraph('animals'); // initiate the graph
+		
+	} // vis.stats.initContainer()
+	
+	my.initGraph = function(){
+		
+		/* set-up graph */ 
+
+		var data = [
+			{ name: 'cow', points: '100' },
+			{ name: 'sloth', points: '90' },
+			{ name: 'giraffeweevil', points: '75' },
+			{ name: 'coati', points: '70' },
+			{ name: 'ara', points: '60' },
+			{ name: 'snail', points: '55' },
+			{ name: 'bee', points: '10' },
+		];
+
+		n = data.length;
+
+		// svg = d3.select('svg.svgStats.' + graphId)
+		svg = d3.select('svg')
+			.append('g')
+			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')'); // var svg means graph not full svg
+	
+		xScale = d3.scale.linear()
+			.range([0, width])
+			.domain([0, d3.max(data, function(d) { return d.points; })]); // linear scale bars
+
+		lines = svg.selectAll('.lines')
+			.data(data)
+			.enter()
+			.append('line')
+			.classed('Lines', true)
+			.attr('x1', 0)
+			.attr('y1', function(d,i) { return i * offset; })
+			.attr('x2', 0)
+			.attr('y2', function(d,i) { return i * offset; })
+			.style('stroke-width', '2px')
+			.style('stroke', 'darkorange'); // enter lines
+
+		lines
+			.transition()
+			.delay(function(d,i){ return i * 250 / n; })
+			.attr('x2', function(d) { return xScale(d.points); })
+			
+		label = svg.selectAll('.labels')
+			.data(data)
+			.enter()
+			.append('text')
+			.classed('Labels', true) // enter
+			.attr('x', 0)
+			.attr('y', function(d,i){ return i * offset - 6; })
+			.text(function(d,i){ return d.name; })
+			.style('font-size', '0.8em')
+			.style('font-family', 'Helvetica')
+			.style('font-color', 'darkorange'); // enter text labels
+
+		circles = svg.selectAll('.circles')
+			.data(data)
+			.enter()
+			.append('circle')
+			.classed('Circles', true)
+			.attr('cx', 0)
+			.attr('cy', function(d,i){ return i * offset; })
+			.attr('r', 3)
+			.style('fill', 'darkorange'); // enter lollipop circles
+
+		circles
+			.transition()
+			.delay(function(d,i){ return i * 250 / n; })
+			.attr('cx', function(d){ return xScale(d.points); })
+		
+	} // vis.stats.initGraph()
+
+	
+	return my;
+	
+})(); // vis.stats 
+
+
+
+vis.stats.initContainer();
+
+
+</script>
+
+</body>
+</html>
